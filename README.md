@@ -11,6 +11,7 @@ Wish list
 view count
 activity streams
 Java .war deployment
+soft deletes
 
 Todo
 ---

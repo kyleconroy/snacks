@@ -10,3 +10,7 @@
   Edit tags:
   <%= erb :_tags_form, :locals => {:article => @article} %>
 </div>
+
+<form action="/articles/<%= @article.id %>/destroy" method="post">
+  <button type="submit" class="btn btn-danger" onClick="confirm('Delete this article?');">Delete</button>
+</form>

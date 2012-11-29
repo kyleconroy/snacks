@@ -219,7 +219,7 @@ describe 'browser tests' do
     page.should have_content "text must be at least 5 chars"
   end
   
-  it "only allows asker to edit a question" do
+  it "only allows creator to edit an article" do
     q = Question.create(:title => 'What is the best snack?', :text => 'More description', :user => User.find(:uid => 'FAKE_TEST_UID'))
     visit "/questions/#{q.id}"
     within('#question') { page.should have_link('Edit') }
@@ -227,18 +227,30 @@ describe 'browser tests' do
     visit '/logout'
     visit "/questions/#{q.id}"
     within('#question') { page.should_not have_link('Edit') }
+    visit "/articles/#{q.id}/edit"
+    page.body.should == "Access Denied"
+    
+    browser = Rack::Test::Session.new(Rack::MockSession.new(Sinatra::Application))
+    browser.post "/articles/#{q.id}/update", nil, {"rack.session" => {"user_id" => User.find(:uid => 'FAKE_TEST_UID_2').id} }
+    browser.last_response.should be_forbidden
   end
   
-  it "only allows answerer to edit an answer" do
+  it "only allows creator to delete an article" do
+    q = Question.create(:title => 'What is the best snack?', :text => 'More description', :user => User.find(:uid => 'FAKE_TEST_UID'))
+
+    visit "/articles/#{q.id}/edit"
+    expect do
+      click_button('Delete')
+    end.to change{ Article.count }.by(-1)
+
+    q = Question.create(:title => 'What is the best snack?', :text => 'More description', :user => User.find(:uid => 'FAKE_TEST_UID'))
     
-  end
-  
-  it "only allows asker to delete a question" do
+    OmniAuth.config.add_mock(:google_apps, {:uid => 'FAKE_TEST_UID_2'})
+    visit '/logout'
     
-  end
-  
-  it "only allows answerer to delete an answer" do
-    
+    browser = Rack::Test::Session.new(Rack::MockSession.new(Sinatra::Application))
+    browser.post "/articles/#{q.id}/destroy", nil, {"rack.session" => {"user_id" => User.find(:uid => 'FAKE_TEST_UID_2').id} }
+    browser.last_response.should be_forbidden
   end
   
   it "can answer a question" do

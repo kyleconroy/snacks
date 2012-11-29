@@ -103,12 +103,22 @@ module SearchQuery
   end
 end
 
-def auth
+def authenticate
   unless session[:user_id]
     session[:back_page] = request.path_info
     redirect to('auth/google_apps')
   end
   @current_user = User[session[:user_id]]
+end
+
+class Unauthorized < Exception; end
+
+error Unauthorized do
+  [403, "Access Denied"]
+end
+
+def authorize(authorized_user)
+  raise Unauthorized unless @current_user == authorized_user
 end
 
 %w(get post).each do |method|
@@ -132,7 +142,7 @@ get '/logout' do
 end
 
 get '/' do
-  auth
+  authenticate
   @tags = Tag.fetch("select tags.name, tags.id as id,
                       count(articles_tags.id) as count
                         from tags left join articles_tags on tags.id = articles_tags.tag_id
@@ -142,25 +152,25 @@ get '/' do
 end
 
 post '/tags/create' do
-  auth
+  authenticate
   @tag = Tag.new(:name => params[:name])
   @tag.save ? redirect(to('/tags')) : erb(:tags_index)
 end
 
 get '/tags' do
-  auth
+  authenticate
   @tag = Tag.new
   erb :tags_index
 end
 
 get '/questions/new' do
-  auth
+  authenticate
   @question = Question.new
   erb :questions_new
 end
 
 post '/questions/create' do
-  auth
+  authenticate
   @question = Question.new(:text => params[:text], 
                            :title => params[:title],
                            :user => @current_user)
@@ -169,13 +179,13 @@ post '/questions/create' do
 end
 
 get '/questions/:id' do
-  auth
+  authenticate
   @question = Article[params[:id]]
   erb :questions_show
 end
 
 post '/questions/:question_id/answers' do
-  auth
+  authenticate
   @question = Question[params[:question_id]]
   @answer = Answer.new(:text => params[:text],
                       :user => @current_user,
@@ -184,34 +194,44 @@ post '/questions/:question_id/answers' do
 end
 
 get '/articles/:id/edit' do
-  auth
+  authenticate
   @article = Article[params[:id]]
+  authorize(@article.user)
   erb :articles_edit
 end
 
 post '/articles/:id/update' do
-  auth
+  authenticate
   @article = Article[params[:id]]
+  authorize(@article.user)
   @article.text = params[:text]
   @article.title = params[:title]
   @article.taghash = JSON.parse(params[:taghash]) unless params[:taghash].empty?
   @article.save ? redirect(to("/questions/#{@article.id}")) : erb(:articles_edit)
 end
 
+post '/articles/:id/destroy' do
+  authenticate
+  article = Article[params[:id]]
+  authorize(article.user)
+  article.destroy
+  redirect(to("/"))
+end
+
 get '/users' do
-  auth
+  authenticate
   erb :users_index
 end
 
 get '/users/:id' do
-  auth
+  authenticate
   @user = User[params[:id]]
   erb :users_show
 end
 
 [['upvote', 1], ['downvote', -1]].each do |path, value|
   post '/articles/:article_id/' + path do
-    auth
+    authenticate
     article = Article[params[:article_id]]
     vote = Vote.find(:article => article, :user => @current_user, :value => value)
     vote ? vote.destroy : Vote.create(:article => article, :user => @current_user, :value => value)
@@ -220,7 +240,7 @@ end
 end
 
 post '/articles/:article_id/comments' do
-  auth
+  authenticate
   article = Article[params[:article_id]]
   @comment = Comment.new(:user => @current_user,
                         :text => params[:text],
@@ -230,7 +250,7 @@ post '/articles/:article_id/comments' do
 end
 
 get '/search' do
-  auth
+  authenticate
   @results = []
   @results = SearchQuery.search(params[:query]) if params[:query]
   erb :search
