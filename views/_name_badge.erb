@@ -1,0 +1,2 @@
+<%= article.type == "Question" ? 'Asked' : 'Answered' %> <%= article.created_at.to_time.ago_in_words %>
+<a href="/users/<%= article.user.id %>"><%= article.user.name %></a>

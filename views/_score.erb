@@ -1,0 +1,9 @@
+<div class='score'>
+  <div class="upvote <%= 'voted' if vote && vote.value == 1 %>">
+    <div class="arrow-up"></div>
+  </div>
+  <h2 class='tally'><%= score %></h2>
+  <div class='downvote <%= 'voted' if vote && vote.value == -1 %>'>
+    <div class="arrow-down"></div>
+  </div>
+</div>

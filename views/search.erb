@@ -1,0 +1,14 @@
+<h2><a href="/">Home</a> / Search results</h2>
+<hr>
+<table class="table" data-rowlink="a">
+  <tbody>
+  <% if @results.empty? %>
+    No results.
+  <% end %>
+  <% @results.each do |result| %>
+    <tr>
+      <td><a href="/questions/<%= result[:question_id] %>"><%= result[:headline] %></a></td>
+    </tr>
+  <% end %>
+  </tbody>
+</table>

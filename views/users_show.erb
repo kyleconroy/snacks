@@ -1,0 +1,34 @@
+<h2><%= @user.name %></h2>
+<hr>
+
+
+<div class='row'>
+  <div class="span6">
+    <h4>Questions</h4>
+    <table class='table'>
+      <tbody>
+      <% @user.questions.each do |question| %>
+        <tr>
+          <td>
+            <a href="/questions/<%= question.id %>"><%= question.title %></a>
+          </td>
+        </tr>
+      <% end %>
+      </tbody>
+    </table>
+  </div>
+  <div class="span6">
+    <h4>Answers</h4>
+    <table class='table'>
+      <tbody>
+      <% @user.answers.each do |answer| %>
+        <tr>
+          <td>
+            <a href="/questions/<%= answer.question.id %>"><%= answer.text %></a>
+          </td>
+        </tr>
+      <% end %>
+      </tbody>
+    </table>
+  </div>
+</div>

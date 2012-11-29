@@ -1,0 +1,10 @@
+<% Tag.all.each do |tag| %>
+  <span class='label'><%= tag.name %></span>
+<% end %>
+
+<%= erb :_errors, :locals => {:model => @tag} %>
+
+<form action="/tags/create" method="post">
+  <input type="text" class="span3" name="name" placeholder="Name" value='<%= @tag.name %>'>
+  <button type="submit" class="btn">Create Tag</button>
+</form>

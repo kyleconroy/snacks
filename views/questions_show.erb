@@ -1,0 +1,70 @@
+<h2><%= @question.title %></h2>
+<hr/>
+<div class='row'>
+  <div class="span10">
+    <%= erb :_errors, :locals => {:model => @comment } %>
+    <div class='row article' id='question' data-id='<%= @question.id %>'>
+      <div class="span1">
+        <%= erb :_score, :locals => {:score => @question.score, :vote => Vote.find(:user => @current_user, :article => @question) } %>
+      </div>
+      <div class="span9">
+        <p><%= @question.text %></p>
+        <% @question.tags.each do |tag| %>
+          <span class="label"><%= tag.name %></span>
+        <% end %>
+        <div class="row">
+          <div class="span2" style='margin-top: 10px;'>
+            <a href="/articles/<%= @question.id %>/edit">Edit</a> | <a href="delete">Delete</a>
+          </div>
+          <div class="span3 offset4" style='background-color: #ddd'>
+          <%= erb :_name_badge, :locals => {:article => @question} %>          
+          </div>
+        </div>
+        <%= erb :_comments, :locals => {:comments => @question.comments } %>
+        <form action="/articles/<%= @question.id %>/comments" method="post" enctype='multipart/form-data'>
+          <textarea class="input" id="text" name="text" rows="1" placeholder="comment"></textarea>
+          <button type="submit" class="btn">Post Comment</button>
+        </form>
+      </div>
+    </div>
+    <hr/>
+    <h3><%= @question.answers.count %> Answers</h3>
+    <% @question.answers.each do |answer| %>
+    <div class='row article answer' data-id='<%= answer.id %>'>
+      <div class="span1">
+        <%= erb :_score, :locals => {:score => answer.score, :vote => Vote.find(:user => @current_user, :article => answer) } %>
+      </div>
+      <div class="span9">
+        <p>
+          <h6>Posted by: <%= answer.user.name %></h6>
+        </p>
+        <p><%= answer.text %></p>
+        <div class="row">
+          <div class="span2" style='margin-top: 10px;'>
+            <a href="/articles/<%= answer.id %>/edit">Edit</a> | <a href="delete">Delete</a>
+          </div>
+          <div class="span3 offset4" style='background-color: #ddd'>
+          <%= erb :_name_badge, :locals => {:article => answer} %>          
+          </div>
+        </div>
+        <%= erb :_comments, :locals => {:comments => answer.comments }%>
+        <form action="/articles/<%= answer.id %>/comments" method="post" enctype='multipart/form-data'>
+          <textarea class="input" id="text" name="text" rows="1" placeholder="comment"></textarea>
+          <button type="submit" class="btn">Post Comment</button>
+        </form>
+      </div>
+    </div>
+    <% end %>
+    <hr/>
+    <h3>Your Answer</h3>
+    <%= erb :_errors, :locals => {:model => @answer } %>
+    <form action="/questions/<%= @question.id %>/answers" method="post" enctype='multipart/form-data'>
+      <textarea class="input-large" id="answer-text" name="text" rows="4" placeholder="answer"></textarea>
+      <button type="submit" class="btn">Post Answer</button>
+    </form>
+  </div>
+  <div class="span2">
+    <p>Asked <%= @question.created_at.to_time.ago_in_words %></p>
+    <p>Active <%= @question.updated_at.to_time.ago_in_words if @question.updated_at %></p>
+  </div>
+</div>

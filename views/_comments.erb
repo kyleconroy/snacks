@@ -1,0 +1,5 @@
+<hr style="border-top: 1px dotted #aaa; margin: 0px;"/>
+<% comments.each do |comment| %>
+  <p style='margin-left:20px'><%= comment.text %> -<a href="/users/<%= comment.user.id %>"><%= comment.user.name %></a> <%= comment.created_at.to_time.ago_in_words %></p>
+<hr style="border-top: 1px dotted #ccc; margin: 0px;"/>
+<% end %>

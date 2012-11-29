@@ -1,0 +1,29 @@
+<h2>Ask Question</h2>
+<hr>
+<div class="row">
+
+<section>
+  <div class="span8">
+    <%= erb :_errors, :locals => {:model => @question } %>
+    
+    <form action="/questions/create" method="post" enctype='multipart/form-data'>
+      
+      <div class="control-group" id="dated-form">
+      </div>
+      <input type="text" class="span3" name="title" placeholder="Title">
+      <hr>
+      <textarea class="input-large" id="text" name="text" rows="4" placeholder="Article Text"></textarea>
+      <input name="taghash" class='hidden taghash'></input>
+      <button type="submit" class="btn">Create Question</button>
+    </form>
+
+    <%= erb :_tags_form, :locals => {:article => @question} %>
+  </div>
+  <div class="span4">
+    <h6>Available Tags:</h6>
+    <% Tag.each do |tag| %>
+      <span class="label"><%= tag.name %></span>
+    <% end %>
+  </div>
+</section>
+</div>

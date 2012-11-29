@@ -1,0 +1,12 @@
+<%= erb :_errors, :locals => {:model => @article } %>
+<form action="/articles/<%= @article.id %>/update" method="post" enctype='multipart/form-data'>
+  <input type="text" class="span3" name="title" placeholder="Title" value="<%= @article.title %>">
+  <textarea rows="3" id="text" name="text"><%= @article.text %></textarea>
+  <input name="taghash" class='hidden taghash'></input>
+  <button type="submit" class="btn">Save</button>
+</form>
+
+<div style='width: 500px; border: 1px solid grey'>
+  Edit tags:
+  <%= erb :_tags_form, :locals => {:article => @article} %>
+</div>

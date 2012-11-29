@@ -1,0 +1,27 @@
+.arrow-up {
+  width: 0; 
+  height: 0; 
+  border-left: 12px solid transparent;
+  border-right: 12px solid transparent;
+
+  border-bottom: 12px solid black;
+  cursor:pointer;
+}
+
+.voted .arrow-up {
+    border-bottom: 12px solid green;
+}
+
+.arrow-down {
+	width: 0; 
+	height: 0; 
+	border-left: 12px solid transparent;
+	border-right: 12px solid transparent;
+	
+	border-top: 12px solid black;
+	cursor:pointer;
+}
+
+.voted .arrow-down {
+    border-top: 12px solid red;
+}

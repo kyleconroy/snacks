@@ -1,0 +1,8 @@
+<% if model && model.errors.length > 0 %>
+<div class="alert alert-error">
+  <button type="button" class="close" data-dismiss="alert">×</button>
+  <% model.errors.each do |error| %>
+    <p><strong><%= error[0] %></strong> <%= error[1][0] %></p>
+  <% end %>
+</div>
+<% end %>
