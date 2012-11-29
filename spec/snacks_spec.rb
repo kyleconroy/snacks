@@ -103,6 +103,15 @@ describe 'model tests' do
     Tag.where(:name => 'valid-tag').should be_empty
   end
   
+  it "can't tag an article twice with the same tag" do
+    u = User.create(:name => 'abcd', :uid => 'dude@dude.com')
+    q = Question.create(:title => 'What is the best snack?', :text => 'More description', :user => u)
+    q.add_tag(:name => 'cookies')
+    q.taghash = {'cookies' => 'add'}
+    q.save.should be_false
+    q.errors.keys.should include(:tag)
+  end
+  
   it "can search for a basic term" do
     u = User.create(:name => 'abcd', :uid => 'dude@dude.com')
     q = Question.create(:title => 'What is the best snack?', :text => 'More description', :user => u)
@@ -244,7 +253,7 @@ describe 'browser tests' do
   it "breaks if i try creating a question and not logged in"
   it "should persist comments after failing validation and show errors nearby"
   it "can search by tag"
-  it "can't tag the same article multiple times"
+  it "handles 404s in a sane way"
   
   # less important below this line
   

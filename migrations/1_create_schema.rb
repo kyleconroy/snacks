@@ -51,6 +51,7 @@ Sequel.migration do
     
     add_index :articles_tags, :tag_id
     add_index :articles_tags, :article_id
+    add_index :articles_tags, [:article_id, :tag_id], :unique => true
 
     create_table :votes do
       primary_key :id

@@ -60,6 +60,9 @@ class Question < Article
       rescue Sequel::ValidationFailed => e
         errors.add(:tag, e)
         raise Sequel::Rollback
+      rescue Sequel::DatabaseError => e
+        errors.add(:tag, "This article already has that tag.")
+        raise Sequel::Rollback
       end
     end
   end
