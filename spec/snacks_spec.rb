@@ -19,6 +19,10 @@ describe 'model tests' do
   end
 
   it "validates question title and body length" do
+    q = Question.new()
+    q.validate
+    q.errors.keys.should include(:title)
+    q.errors.keys.should include(:text)
     q = Question.new(:title => '1234', :text => '1234')
     q.validate
     q.errors.keys.should include(:title)
@@ -29,6 +33,36 @@ describe 'model tests' do
     a = Answer.new(:text => '1234')
     a.validate
     a.errors.keys.should include(:text)
+  end
+  
+  it "validates comment body" do
+    c = Comment.new
+    c.validate
+    c.errors.keys.should include(:text)
+    c = Comment.new(:text => 'foo')
+    c.validate
+    c.errors.keys.should include(:text)
+  end
+  
+  it "deletes answers when the question is deleted" do
+    u = User.create(:name => 'abcd', :uid => 'dude@dude.com')
+    q = Question.create(:title => '12345', :text => '12345', :user => u)
+    a = Answer.create(:question => q, :text => '12345', :user => u)
+    expect { q.destroy }.to change { Answer.count }.by(-1)
+  end
+  
+  it "deletes comments when the question or answer is deleted" do
+    u = User.create(:name => 'abcd', :uid => 'dude@dude.com')
+    q = Question.create(:title => '12345', :text => '12345', :user => u)
+    c = Comment.create(:article => q, :user => u, :text => 'abcde')
+    expect { q.destroy }.to change { Comment.count }.by(-1)
+  end
+  
+  it "deletes article tag joins when the question or answer is deleted" do
+    u = User.create(:name => 'abcd', :uid => 'dude@dude.com')
+    q = Question.create(:title => '12345', :text => '12345', :user => u)
+    q.add_tag(:name => 'newtag')
+    expect { q.destroy }.to change { Tag.find(:name => 'newtag').articles.count }.by(-1)
   end
   
   it "sets created_at timestamps for users, questions, answers and comments" do
@@ -208,13 +242,15 @@ describe 'browser tests' do
   
   it "should allow anonymous browsing"
   it "breaks if i try creating a question and not logged in"
-  
   it "should persist comments after failing validation and show errors nearby"
   it "can search by tag"
+  it "can't tag the same article multiple times"
+  it "can delete a comment"
+  
+  # less important below this line
+  
   it "has pagination"
   it "jumps to the relevant answer section on a link"
-  it "can't tag the same article multiple times"
-  it "handles cascading deletes"
   
   it "Displays validation errors on answering a question" do
     visit '/'

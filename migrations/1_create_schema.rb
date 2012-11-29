@@ -17,7 +17,7 @@ Sequel.migration do
       DateTime :created_at, :null => false
       DateTime :updated_at
       foreign_key :user_id, :users, :null => false
-      foreign_key :article_id, :articles
+      foreign_key :article_id, :articles, :on_delete => :cascade
     end
     
     add_index :articles, :user_id
@@ -46,7 +46,7 @@ Sequel.migration do
     create_table :articles_tags do
      primary_key :id
      foreign_key :tag_id, :tags, :null => false
-     foreign_key :article_id, :articles, :null => false
+     foreign_key :article_id, :articles, :null => false, :on_delete => :cascade
     end
     
     add_index :articles_tags, :tag_id
@@ -65,7 +65,7 @@ Sequel.migration do
     create_table :comments do
       primary_key :id
       String :text, :null => false
-      foreign_key :article_id, :articles, :null => false
+      foreign_key :article_id, :articles, :null => false, :on_delete => :cascade
       foreign_key :user_id, :users, :null => false
       DateTime :created_at, :null => false
     end

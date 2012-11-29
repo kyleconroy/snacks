@@ -16,7 +16,7 @@ class Article < Sequel::Model
   attr_writer :taghash
   
   def validate
-    errors.add(:text, "must be at least 5 chars") if text.empty? || text.length < 5
+    errors.add(:text, "must be at least 5 chars") if text.nil? || text.length < 5
   end
   
   def score
@@ -36,7 +36,7 @@ class Question < Article
   
   def validate
     super
-    errors.add(:title, "must be at least 5 chars") if title.empty? || title.length < 5
+    errors.add(:title, "must be at least 5 chars") if title.nil? || title.length < 5
   end
   
   def taghash
@@ -70,7 +70,7 @@ class Comment < Sequel::Model
   many_to_one :user
   
   def validate
-    errors.add(:text, "must be at least 5 chars") if text.empty? || text.length < 5
+    errors.add(:text, "must be at least 5 chars") if text.nil? || text.length < 5
   end
 end
 
