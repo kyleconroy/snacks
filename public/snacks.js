@@ -20,7 +20,9 @@ $(document).ready(function() {
     $('.upvote').bind('click', vote('upvote'));
     $('.downvote').bind('click', vote('downvote'));
     
-    var tagHash = {};
+    var prevVal = $('.taghash').val()
+    var tagHash = prevVal ? JSON.parse(prevVal) : {};
+
     $('.delete-tag').bind('click', function(e) {
         e.preventDefault();
         var bubble = $(this).closest('span');
@@ -29,6 +31,7 @@ $(document).ready(function() {
         $('.taghash').val(JSON.stringify(tagHash));
         bubble.remove();
     });
+    
     $('.tag-input').keypress(function(e) {
         if(e.which == 13) {
             e.preventDefault();
@@ -39,4 +42,9 @@ $(document).ready(function() {
             $(this).val('');
         }
     });
+
+    for(t in tagHash) {
+        if(tagHash[t] == 'add' && $("span[data-name='"+ t +"']").length == 0) $('.taglist').append("<span class='label' data-name='" + t + "'>" + t + "<a href='' class='delete-tag'>x</a></span>");
+        else if(tagHash[t] == 'remove') $("span[data-name='" + t + "']").remove();
+    }
 });

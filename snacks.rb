@@ -13,6 +13,7 @@ class Article < Sequel::Model
   one_to_many :comments
   many_to_many :tags
   plugin :single_table_inheritance, :type
+  attr_writer :taghash
   
   def validate
     errors.add(:text, "must be at least 5 chars") if text.empty? || text.length < 5
@@ -21,25 +22,32 @@ class Article < Sequel::Model
   def score
     votes_dataset.sum(:value) || 0
   end
+  
+  def taghash
+    {}
+  end
 end
 
 class Answer < Article; end
 
 class Question < Article
   one_to_many :answers, :key => :article_id, :class => Answer
-  
-  attr_accessor :taghash
+  attr_writer :taghash
   
   def validate
     super
     errors.add(:title, "must be at least 5 chars") if title.empty? || title.length < 5
   end
   
+  def taghash
+    @taghash || {}
+  end
+  
   def around_save
     db.transaction do
       begin
       super
-      (taghash || {}).keys.each do |tagname|
+      taghash.keys.each do |tagname|
         tag = Tag.find(:name => tagname)
         tag = Tag.new({:name => tagname}) unless tag
         tag.save(:raise_on_failure => true)
@@ -100,6 +108,15 @@ module SearchQuery
     query = term.gsub(/\s+/, '?').gsub(/[^\w\?]/, '')
     results = results.filter("ts_text @@ to_tsquery('english', ?::text)", query)
     results.select { [:question_id, ts_headline('english', :text, to_tsquery('english', query), 'MaxFragments=2').as(headline)] }
+  end
+end
+
+module ParamHelpers
+  def self.try_json(str)
+    return nil if str.empty?
+    JSON.parse(str)
+  rescue JSON::ParserError => e
+    nil
   end
 end
 
@@ -174,7 +191,7 @@ post '/questions/create' do
   @question = Question.new(:text => params[:text], 
                            :title => params[:title],
                            :user => @current_user)
-  @question.taghash = JSON.parse(params[:taghash]) unless params[:taghash].empty?
+  @question.taghash = ParamHelpers.try_json(params[:taghash])
   @question.save ? redirect(to("/questions/#{@question.id}")) : erb(:questions_new)
 end
 
@@ -206,7 +223,7 @@ post '/articles/:id/update' do
   authorize(@article.user)
   @article.text = params[:text]
   @article.title = params[:title]
-  @article.taghash = JSON.parse(params[:taghash]) unless params[:taghash].empty?
+  @article.taghash = ParamHelpers.try_json(params[:taghash])
   @article.save ? redirect(to("/questions/#{@article.id}")) : erb(:articles_edit)
 end
 

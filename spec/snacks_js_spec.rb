@@ -45,6 +45,32 @@ describe 'browser tests with javascript' do
     page.should have_content 'pastries'
   end
   
+  it "persists the state of your tag edits when the question validation fails" do
+    visit '/'
+    click_link 'Add Question'
+    fill_in 'title', :with => "What is the best snack?"
+    fill_in 'text', :with => 'Ice cream'
+    fill_in 'tag_input', :with => 'pastries'
+    find('.tag-input').native.send_keys(:return)
+    click_button 'Create Question'
+    
+    page.current_path.should =~ /questions\/(\d+)$/
+    click_link 'Edit'
+    fill_in 'title', :with => 'Invd'
+    page.should have_css('span[data-name="pastries"]')
+    within("span[data-name='pastries']") { click_link 'x' }
+    fill_in 'tag_input', :with => 'donuts'
+    find('.tag-input').native.send_keys(:return)
+    click_button "Save"
+    page.should have_css("span[data-name='donuts']")
+    page.should_not have_css("span[data-name='pastries']")
+    fill_in 'tag_input', :with => 'pastries'
+    find('.tag-input').native.send_keys(:return)
+    click_button "Save"
+    page.should have_css("span[data-name='donuts']")
+    page.all("span[data-name='pastries']").length.should == 1
+  end
+  
   it "can upvote an question only once, and then undo the upvote" do
     visit '/'
     click_link 'Add Question'
@@ -72,6 +98,4 @@ describe 'browser tests with javascript' do
       expect { find('.downvote').click }.to change{ Vote.count }.by(-1)
     end
   end
-  
-  it "should preserve your tags when saving a question fails"
 end

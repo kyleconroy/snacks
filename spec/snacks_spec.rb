@@ -95,6 +95,13 @@ describe 'model tests' do
     q.score.should == 0
   end
   
+  it "uses tryJson which is resilient to invalid json" do
+    ParamHelpers.try_json('').should == nil
+    ParamHelpers.try_json('null').should == nil
+    ParamHelpers.try_json('{}').should == {}
+    ParamHelpers.try_json('{"a":"b","c":2}').should == {'a' => 'b', 'c' => 2}
+  end
+  
   it "can't vote on own question"
 end
 
@@ -207,6 +214,7 @@ describe 'browser tests' do
   it "has pagination"
   it "jumps to the relevant answer section on a link"
   it "can't tag the same article multiple times"
+  it "handles cascading deletes"
   
   it "Displays validation errors on answering a question" do
     visit '/'
