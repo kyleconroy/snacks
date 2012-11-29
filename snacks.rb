@@ -114,10 +114,7 @@ end
 %w(get post).each do |method|
   send(method, "/auth/:provider/callback") do
     auth = request.env['omniauth.auth']
-    user = User.find_or_create(:uid => auth[:uid]) do |u|
-      u.name = auth[:info][:name]
-      u.created_at = Time.now
-    end
+    user = User.find_or_create(:uid => auth[:uid]) { |u| u.name = auth[:info][:name] }
     session[:user_id] = user.id
     if session[:back_page]
       back_page = session[:back_page]

@@ -14,7 +14,9 @@
         <% end %>
         <div class="row">
           <div class="span2" style='margin-top: 10px;'>
-            <a href="/articles/<%= @question.id %>/edit">Edit</a> | <a href="delete">Delete</a>
+            <% if @question.user == @current_user %>
+              <a href="/articles/<%= @question.id %>/edit">Edit</a> | <a href="delete">Delete</a>
+            <% end %>
           </div>
           <div class="span3 offset4" style='background-color: #ddd'>
           <%= erb :_name_badge, :locals => {:article => @question} %>          

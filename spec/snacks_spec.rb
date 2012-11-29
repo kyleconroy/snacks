@@ -100,21 +100,15 @@ end
 
 describe 'browser tests' do
   include Capybara::DSL
-
-  #Capybara.javascript_driver = :webkit
-  before :all do
-    User.create(:uid => 'FAKE_TEST_UID', :name => 'The Test User',  :created_at => Time.now)
-    OmniAuth.config.test_mode = true
-    OmniAuth.config.mock_auth[:google_apps] = OmniAuth::AuthHash.new({
-        :provider => 'google_apps',
-        :uid => 'FAKE_TEST_UID'
-      })
-  end
   
   before :each do
     clean_db
+    User.create(:uid => 'FAKE_TEST_UID', :name => 'The Test User')
+    OmniAuth.config.test_mode = true
+    OmniAuth.config.add_mock(:google_apps, {:uid => 'FAKE_TEST_UID'})
+    visit '/logout' # Need to get a new cookie
   end
-  
+
   it "survives an empty search query" do
     visit '/'
     fill_in 'query', :with => ''
@@ -210,8 +204,6 @@ describe 'browser tests' do
   it "can only add tags to questions and not answers"
   it "breaks if i try creating a question and not logged in"
   it "can search by tag"
-  it "can delete a question or answer"
-  it "only allows user to edit or delete"
   it "has pagination"
   it "jumps to the relevant answer section on a link"
   
@@ -225,6 +217,28 @@ describe 'browser tests' do
     fill_in 'answer-text', :with => 'chip'
     click_button 'Post Answer'
     page.should have_content "text must be at least 5 chars"
+  end
+  
+  it "only allows asker to edit a question" do
+    q = Question.create(:title => 'What is the best snack?', :text => 'More description', :user => User.find(:uid => 'FAKE_TEST_UID'))
+    visit "/questions/#{q.id}"
+    within('#question') { page.should have_link('Edit') }
+    OmniAuth.config.add_mock(:google_apps, {:uid => 'FAKE_TEST_UID_2'})
+    visit '/logout'
+    visit "/questions/#{q.id}"
+    within('#question') { page.should_not have_link('Edit') }
+  end
+  
+  it "only allows answerer to edit an answer" do
+    
+  end
+  
+  it "only allows asker to delete a question" do
+    
+  end
+  
+  it "only allows answerer to delete an answer" do
+    
   end
   
   it "can answer a question" do

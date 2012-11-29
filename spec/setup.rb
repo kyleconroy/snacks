@@ -15,5 +15,5 @@ Capybara.app = Sinatra::Application
 
 
 def clean_db
-  DB.from(:tags, :articles, :articles_tags, :votes, :comments).truncate
+  DB.from(:tags, :articles, :articles_tags, :votes, :comments, :users).truncate
 end

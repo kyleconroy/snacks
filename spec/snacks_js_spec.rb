@@ -5,17 +5,15 @@ Capybara.default_driver = :selenium
 describe 'browser tests with javascript' do
   include Capybara::DSL
 
-  before :all do
+  before :each do
+    clean_db
     User.create(:uid => 'FAKE_TEST_UID', :name => 'The Test User',  :created_at => Time.now)
     OmniAuth.config.test_mode = true
     OmniAuth.config.mock_auth[:google_apps] = OmniAuth::AuthHash.new({
         :provider => 'google_apps',
-        :uid => 'FAKE_TEST_UID'
+        :uid => 'FAKE_TEST_UID',
       })
-  end
-  
-  before :each do
-    clean_db
+    visit '/logout' # get new cookie
   end
   
   it "can edit an existing question" do
