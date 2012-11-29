@@ -43,6 +43,10 @@ class Question < Article
     @taghash || {}
   end
   
+  def question
+    self
+  end
+  
   def around_save
     db.transaction do
       begin
@@ -262,8 +266,17 @@ post '/articles/:article_id/comments' do
   @comment = Comment.new(:user => @current_user,
                         :text => params[:text],
                         :article => article)
-  @question = article.is_a?(Answer) ? article.question : article
+  @question = article.question
   @comment.save ? redirect(to("/questions/#{@question.id}")) : erb(:questions_show)
+end
+
+post '/comments/:id/destroy' do
+  authenticate
+  comment = Comment[params[:id]]
+  question = comment.article.question
+  authorize(comment.user)
+  comment.destroy
+  redirect(to("/questions/#{question.id}"))
 end
 
 get '/search' do

@@ -217,7 +217,7 @@ describe 'browser tests' do
     page.should have_css('input[value="What is the best snack?"]')
     fill_in 'title', :with => 'My New Title'
     click_button 'Save'
-    page.current_path.should =~ /questions\/(\d)+/
+    page.current_path.should =~ /questions\/(\d)+$/
     Question.find(:text => "Pepperidge Farm Milano").title.should == 'My New Title'
   end
   
@@ -237,7 +237,7 @@ describe 'browser tests' do
     end
     page.should have_content "comment body"
     click_link "comment body"
-    page.current_path.should =~ /questions\/(\d)+/
+    page.current_path.should =~ /questions\/(\d)+$/
   end
   
   it "should allow anonymous browsing"
@@ -245,7 +245,6 @@ describe 'browser tests' do
   it "should persist comments after failing validation and show errors nearby"
   it "can search by tag"
   it "can't tag the same article multiple times"
-  it "can delete a comment"
   
   # less important below this line
   
@@ -258,7 +257,7 @@ describe 'browser tests' do
     fill_in 'title', :with => "What is the best snack?"
     fill_in 'text', :with => 'I really want to know.'
     click_button 'Create Question'
-    page.current_path.should =~ /questions\/(\d)+/
+    page.current_path.should =~ /questions\/(\d)+$/
     fill_in 'answer-text', :with => 'chip'
     click_button 'Post Answer'
     page.should have_content "text must be at least 5 chars"
@@ -298,13 +297,45 @@ describe 'browser tests' do
     browser.last_response.should be_forbidden
   end
   
+  it "only allows creator to delete a comment" do
+    q = Question.create(:title => 'What is the best snack?', :text => 'More description', :user => User.find(:uid => 'FAKE_TEST_UID'))
+    visit "/questions/#{q.id}"
+    within ('#question') do
+      fill_in 'text', :with => "I don't understand your question."
+    end
+    click_button 'Post Comment'
+    within ('#question') do
+      page.should have_content "Delete Comment"
+    end
+    
+    OmniAuth.config.add_mock(:google_apps, {:uid => 'FAKE_TEST_UID_2'})
+    visit '/logout'
+    visit "/questions/#{q.id}"
+    within ('#question') do
+      page.should_not have_content "Delete Comment"
+    end
+    
+    c = Comment.order(:id).last
+    browser = Rack::Test::Session.new(Rack::MockSession.new(Sinatra::Application))
+    browser.post "/comments/#{c.id}/destroy", nil, {"rack.session" => {"user_id" => User.find(:uid => 'FAKE_TEST_UID_2').id} }
+    browser.last_response.should be_forbidden
+    
+    OmniAuth.config.add_mock(:google_apps, {:uid => 'FAKE_TEST_UID'})
+    visit '/logout'
+    visit "/questions/#{q.id}"
+    within ('#question') do
+      expect { click_button "Delete Comment" }.to change { Comment.count }.by(-1)
+    end
+    page.current_path.should =~ /questions\/(\d)+$/
+  end
+  
   it "can answer a question and edit it, but not tag it" do
      visit '/'
      click_link 'Add Question'
      fill_in 'title', :with => "What is the best snack?"
      fill_in 'text', :with => 'I really want to know.'
      click_button 'Create Question'
-     page.current_path.should =~ /questions\/(\d)+/
+     page.current_path.should =~ /questions\/(\d)+$/
      fill_in 'answer-text', :with => 'chips ahoy'
      click_button 'Post Answer'
      within('.answer') do
