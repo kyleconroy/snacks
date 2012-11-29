@@ -13,10 +13,6 @@ activity streams
 Java .war deployment
 soft deletes
 
-Todo
----
-Database indexes
-
 Keeping the design snack-like
 
 Referential integrity is good, please use foreign key constraints.

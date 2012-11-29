@@ -200,12 +200,13 @@ describe 'browser tests' do
   end
   
   it "should allow anonymous browsing"
-  it "should persist comments after failing validation and show errors nearby"
-
   it "breaks if i try creating a question and not logged in"
+  
+  it "should persist comments after failing validation and show errors nearby"
   it "can search by tag"
   it "has pagination"
   it "jumps to the relevant answer section on a link"
+  it "can't tag the same article multiple times"
   
   it "Displays validation errors on answering a question" do
     visit '/'

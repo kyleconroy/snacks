@@ -7,6 +7,8 @@ Sequel.migration do
       DateTime :created_at, :null => false
     end
     
+    add_index :users, :uid
+    
     create_table :articles do
       primary_key :id
       String :text, :null => false
@@ -17,6 +19,9 @@ Sequel.migration do
       foreign_key :user_id, :users, :null => false
       foreign_key :article_id, :articles
     end
+    
+    add_index :articles, :user_id
+    add_index :articles, :article_id
     # answers_count
     # votes_score
 
@@ -43,6 +48,9 @@ Sequel.migration do
      foreign_key :tag_id, :tags, :null => false
      foreign_key :article_id, :articles, :null => false
     end
+    
+    add_index :articles_tags, :tag_id
+    add_index :articles_tags, :article_id
 
     create_table :votes do
       primary_key :id
@@ -50,6 +58,9 @@ Sequel.migration do
       foreign_key :article_id, :articles, :null => false
       foreign_key :user_id, :users, :null => false
     end
+    
+    add_index :votes, :article_id
+    add_index :votes, :user_id
 
     create_table :comments do
       primary_key :id
@@ -58,6 +69,9 @@ Sequel.migration do
       foreign_key :user_id, :users, :null => false
       DateTime :created_at, :null => false
     end
+    
+    add_index :comments, :article_id
+    add_index :comments, :user_id
     
     run "ALTER TABLE comments ADD COLUMN ts_text tsvector;"
     run "CREATE INDEX comments_ts_text_idx ON comments USING gin(ts_text);"
