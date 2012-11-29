@@ -6,10 +6,12 @@
   <button type="submit" class="btn">Save</button>
 </form>
 
+<% if @article.is_a? Question %>
 <div style='width: 500px; border: 1px solid grey'>
   Edit tags:
   <%= erb :_tags_form, :locals => {:article => @article} %>
 </div>
+<% end %>
 
 <form action="/articles/<%= @article.id %>/destroy" method="post">
   <button type="submit" class="btn btn-danger" onClick="confirm('Delete this article?');">Delete</button>

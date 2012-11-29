@@ -201,7 +201,7 @@ describe 'browser tests' do
   
   it "should allow anonymous browsing"
   it "should persist comments after failing validation and show errors nearby"
-  it "can only add tags to questions and not answers"
+
   it "breaks if i try creating a question and not logged in"
   it "can search by tag"
   it "has pagination"
@@ -253,7 +253,7 @@ describe 'browser tests' do
     browser.last_response.should be_forbidden
   end
   
-  it "can answer a question" do
+  it "can answer a question and edit it, but not tag it" do
      visit '/'
      click_link 'Add Question'
      fill_in 'title', :with => "What is the best snack?"
@@ -262,7 +262,11 @@ describe 'browser tests' do
      page.current_path.should =~ /questions\/(\d)+/
      fill_in 'answer-text', :with => 'chips ahoy'
      click_button 'Post Answer'
-     # no assertion?
+     within('.answer') do
+       click_link 'Edit'
+     end
+     page.current_path.should =~ /articles\/(\d)+\/edit/
+     page.should_not have_css('.tag-input')
    end
   
   it "searches over title" do
