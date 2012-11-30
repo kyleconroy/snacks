@@ -145,6 +145,7 @@ describe 'model tests' do
     ParamHelpers.try_json('{"a":"b","c":2}').should == {'a' => 'b', 'c' => 2}
   end
   
+
   it "can't vote on own question"
 end
 
@@ -252,8 +253,9 @@ describe 'browser tests' do
   it "should allow anonymous browsing"
   it "breaks if i try creating a question and not logged in"
   it "should persist comments after failing validation and show errors nearby"
-  it "can search by tag"
   it "handles 404s in a sane way"
+  it "tags have unique names"
+  it "FIX THE CONFIRM BOXES"
   
   # less important below this line
   
@@ -367,6 +369,13 @@ describe 'browser tests' do
       click_button "Search"
     end
     page.should have_content "FINDME"
+  end
+  
+  it "can browse by tag" do
+    q = Question.create(:title => 'What is the best snack?', :text => 'More description', :user => User.find(:uid => 'FAKE_TEST_UID'))
+    q.add_tag(Tag.create(:name => 'new-tag'))
+    visit '/tags/new-tag'
+    page.should have_content 'What is the best snack?'
   end
 end
 

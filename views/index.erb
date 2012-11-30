@@ -16,33 +16,13 @@
         <a href="#">interesting</a>
       </li>
     </ul>
-    <table class="table">
-      <tbody>
-      <% @questions.each do |question| %>
-        <tr>
-          <td>
-          
-            0 Votes 0 Answers 0 Views
-          </td>
-          <td><a href="/questions/<%= question[:id] %>"><%= question[:title] %></a></td>
-          <td>
-            <small>
-              <%= question.created_at.to_time.ago_in_words if question.created_at %>
-              <% if question.user %>
-              <a href="/users/<%= question.user.id %>"><%= question.user.name %></a>
-            </small>
-          <% end %>
-          </td>
-        </tr>
-      <% end %>
-      </tbody>
-    </table>
+    <%= erb :_question_list, :locals => { :questions => @questions } %>
 
   </div>
   <div class="span3">
     <% @tags.each do |tag| %>
         <div>
-          <a href="/search?tag=<%= tag.id %>"><span class="label"><%= tag.name %></span></a>x<%= tag[:count] %>
+          <a href="/tags/<%= tag.name %>"><span class="label"><%= tag.name %></span></a>x<%= tag[:count] %>
         </div>
     <% end %>
   </div>

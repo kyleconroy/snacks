@@ -50,13 +50,13 @@ class Question < Article
   def around_save
     db.transaction do
       begin
-      super
-      taghash.keys.each do |tagname|
-        tag = Tag.find(:name => tagname)
-        tag = Tag.new({:name => tagname}) unless tag
-        tag.save(:raise_on_failure => true)
-        taghash[tagname] == 'add' ? add_tag(tag) : remove_tag(tag)
-      end
+        super
+        taghash.keys.each do |tagname|
+          tag = Tag.find(:name => tagname)
+          tag = Tag.new({:name => tagname}) unless tag
+          tag.save(:raise_on_failure => true)
+          taghash[tagname] == 'add' ? add_tag(tag) : remove_tag(tag)
+        end
       rescue Sequel::ValidationFailed => e
         errors.add(:tag, e)
         raise Sequel::Rollback
@@ -187,10 +187,23 @@ get '/tags' do
   erb :tags_index
 end
 
+get '/tags/:tagname' do
+  authenticate
+  @tag = Tag.find(:name => params[:tagname])
+  @questions = @tag.articles
+  erb :questions_index
+end
+
 get '/questions/new' do
   authenticate
   @question = Question.new
   erb :questions_new
+end
+
+get '/questions' do
+  authenticate
+  @questions = Question
+  erb :questions_index
 end
 
 post '/questions/create' do
