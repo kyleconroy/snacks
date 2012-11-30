@@ -14,5 +14,5 @@
 <% end %>
 
 <form action="/articles/<%= @article.id %>/destroy" method="post">
-  <button type="submit" class="btn btn-danger" onClick="confirm('Delete this article?');">Delete</button>
+  <button type="submit" class="btn btn-danger confirm-delete">Delete</button>
 </form>

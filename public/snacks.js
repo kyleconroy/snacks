@@ -46,5 +46,9 @@ $(document).ready(function() {
     for(t in tagHash) {
         if(tagHash[t] == 'add' && $("span[data-name='"+ t +"']").length == 0) $('.taglist').append("<span class='label' data-name='" + t + "'>" + t + "<a href='' class='delete-tag'>x</a></span>");
         else if(tagHash[t] == 'remove') $("span[data-name='" + t + "']").remove();
-    }
+    }    
+
+    $('.confirm-delete').bind('click', function(e) {
+        if(!confirm('Are you sure you want to delete this?')) e.preventDefault();
+    });
 });

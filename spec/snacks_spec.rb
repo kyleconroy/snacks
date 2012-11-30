@@ -147,6 +147,7 @@ describe 'model tests' do
   
 
   it "can't vote on own question"
+  it "tags have unique names"
 end
 
 describe 'browser tests' do
@@ -254,7 +255,6 @@ describe 'browser tests' do
   it "breaks if i try creating a question and not logged in"
   it "should persist comments after failing validation and show errors nearby"
   it "handles 404s in a sane way"
-  it "tags have unique names"
   it "FIX THE CONFIRM BOXES"
   
   # less important below this line
