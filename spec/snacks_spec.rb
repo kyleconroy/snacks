@@ -151,8 +151,6 @@ describe 'model tests' do
     t.save.should be_false
     t.errors.keys.should include(:name)
   end
-
-  it "can't vote on own question"
 end
 
 describe 'browser tests' do
@@ -255,16 +253,6 @@ describe 'browser tests' do
     click_link "comment body"
     page.current_path.should =~ /questions\/(\d)+$/
   end
-  
-  it "should allow anonymous browsing"
-  it "breaks if i try creating a question and not logged in"
-  it "should persist comments after failing validation and show errors nearby"
-  it "handles 404s in a sane way"
-  
-  # less important below this line
-  
-  it "has pagination"
-  it "jumps to the relevant answer section on a link"
   
   it "Displays validation errors on answering a question" do
     visit '/'
@@ -381,5 +369,16 @@ describe 'browser tests' do
     visit '/tags/new-tag'
     page.should have_content 'What is the best snack?'
   end
+  
+  it "should allow anonymous browsing"
+  it "breaks if i try creating a question and not logged in"
+  it "should persist comments after failing validation and show errors nearby"
+  it "handles 404s in a sane way"
+  it "can't vote on own question"
+  
+  # less important below this line
+  
+  it "has pagination"
+  it "jumps to the relevant answer section on a link"
 end
 
