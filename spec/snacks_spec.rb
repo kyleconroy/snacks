@@ -145,9 +145,14 @@ describe 'model tests' do
     ParamHelpers.try_json('{"a":"b","c":2}').should == {'a' => 'b', 'c' => 2}
   end
   
+  it "validates that tags are unique" do
+    Tag.create(:name => 'new-tag')
+    t = Tag.new(:name => 'new-tag')
+    t.save.should be_false
+    t.errors.keys.should include(:name)
+  end
 
   it "can't vote on own question"
-  it "tags have unique names"
 end
 
 describe 'browser tests' do
@@ -255,7 +260,6 @@ describe 'browser tests' do
   it "breaks if i try creating a question and not logged in"
   it "should persist comments after failing validation and show errors nearby"
   it "handles 404s in a sane way"
-  it "FIX THE CONFIRM BOXES"
   
   # less important below this line
   

@@ -53,8 +53,10 @@ class Question < Article
         super
         taghash.keys.each do |tagname|
           tag = Tag.find(:name => tagname)
-          tag = Tag.new({:name => tagname}) unless tag
-          tag.save(:raise_on_failure => true)
+          unless tag
+            tag = Tag.new({:name => tagname}) 
+            tag.save(:raise_on_failure => true)
+          end
           taghash[tagname] == 'add' ? add_tag(tag) : remove_tag(tag)
         end
       rescue Sequel::ValidationFailed => e
@@ -85,6 +87,7 @@ class Tag < Sequel::Model
   many_to_many :articles
   def validate
     errors.add(:name, "must be only lowercase letters, numbers and dashes") unless name =~ /^[a-z0-9]+(-[a-z0-9]+)*$/
+    errors.add(:name, "is a duplicate of #{name}") if Tag.find(:name => name)
   end
 end
 
