@@ -18,13 +18,16 @@ Sequel::Model.db = DB
 Sequel::Model.plugin :json_serializer
 Sequel.datetime_class = DateTime
 
-class Snacks
-  @@configuration = nil
-  def self.configuration
-    return @@configuration if @@configuration
-    @@configuration = YAML.load_file('snacks.yml')
-    required_keys = ['google_apps_domain', 'xss_token', 'allow_anonymous_readers']
-    raise Exception, 'your snacks.yml is not snacky enough' unless (required_keys - configuration.keys).empty?
-    @@configuration
+class SnacksConfig
+  def self.allow_anonymous_readers
+    !!ENV['ALLOW_ANONYMOUS_READERS']
+  end
+  
+  def self.google_apps_domain
+    ENV['GOOGLE_APPS_DOMAIN'] || 'gmail.com'
+  end
+  
+  def self.xss_token
+    ENV['XSS_TOKEN'] || 'default_xss_token_dont_use_me'
   end
 end

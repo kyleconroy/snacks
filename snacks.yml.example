@@ -1,3 +1,0 @@
-google_apps_domain: example.com
-xss_token: your_cool_xss_token
-allow_anonymous_readers: false

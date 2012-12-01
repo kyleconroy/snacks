@@ -1,8 +1,8 @@
 require './environment'
 
 set :root, File.dirname(__FILE__)
-use Rack::Session::Cookie, :secret => Snacks.configuration['xss_token']
-use(OmniAuth::Builder) { provider :google_apps, :domain => Snacks.configuration['google_apps_domain'] }
+use Rack::Session::Cookie, :secret => SnacksConfig.xss_token
+use(OmniAuth::Builder) { provider :google_apps, :domain => SnacksConfig.google_apps_domain }
 
 Sequel::Model.plugin :timestamps
 Sequel::Model.raise_on_save_failure = false
@@ -150,7 +150,7 @@ def authenticate!
 end
 
 def authenticate
-  return authenticate! unless Snacks.configuration['allow_anonymous_readers']
+  return authenticate! unless SnacksConfig.allow_anonymous_readers
   @current_user = User[session[:user_id]] if session[:user_id]
 end
 

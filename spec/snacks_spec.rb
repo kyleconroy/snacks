@@ -380,11 +380,11 @@ describe 'browser tests' do
   it "should allow anonymous browsing" do
     browser = Rack::Test::Session.new(Rack::MockSession.new(Sinatra::Application))
 
-    Snacks.stub(:configuration).and_return({ 'allow_anonymous_readers' => true })
+    SnacksConfig.stub(:allow_anonymous_readers).and_return(true)
     browser.get "/"
     browser.last_response.should be_ok
 
-    Snacks.stub(:configuration).and_return({ 'allow_anonymous_readers' => false })
+    SnacksConfig.stub(:allow_anonymous_readers).and_return(false)
     browser.get "/"
     browser.last_response.should be_redirect
   end
