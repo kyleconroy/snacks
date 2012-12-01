@@ -1,6 +1,6 @@
 <div class="taglist">
   <% article.tags.each do |tag| %>
-    <span class='label' data-name='<%= tag.name %>'><%= tag.name %><a href='' class='delete-tag'> x</a></span>
+    <span class='label' data-name='<%= tag.name %>'><%= tag.name %><a class='delete-tag'> x</a></span>
   <% end %>
   <form>
     <input name="tag_input" class="tag-input"></input>

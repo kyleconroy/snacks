@@ -58,7 +58,8 @@ describe 'browser tests with javascript' do
     click_link 'Edit'
     fill_in 'title', :with => 'Invd'
     page.should have_css('span[data-name="pastries"]')
-    within("span[data-name='pastries']") { click_link 'x' }
+    within("span[data-name='pastries']") { find('a.delete-tag').click }
+    find("input[name='title']").value.should == 'Invd'
     fill_in 'tag_input', :with => 'donuts'
     find('.tag-input').native.send_keys(:return)
     click_button "Save"

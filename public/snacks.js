@@ -23,20 +23,24 @@ $(document).ready(function() {
     var prevVal = $('.taghash').val()
     var tagHash = prevVal ? JSON.parse(prevVal) : {};
 
-    $('.delete-tag').bind('click', function(e) {
-        e.preventDefault();
+    function removeTagFromDom(e) {
         var bubble = $(this).closest('span');
         var tagname = bubble.data('name');
         tagHash[tagname] = 'remove';
         $('.taghash').val(JSON.stringify(tagHash));
         bubble.remove();
-    });
+    };
+
+
     
     $('.tag-input').keypress(function(e) {
         if(e.which == 13) {
             e.preventDefault();
             var tagname = $(this).val();
-            $('.taglist').append("<span class='label' data-name='" + tagname + "'>" + tagname + "<a href='' class='delete-tag'>x</a></span>");
+            var newTag = $('.taglist').append("<span class='label' data-name='" + tagname + "'>" + tagname + "</span>");
+            var newTagDel = newTag.find("span[data-name='" + tagname + "']")
+            newTagDel.append("<a class='delete-tag'> x</a>")
+            newTagDel.bind('click', removeTagFromDom);
             tagHash[tagname] = 'add';
             $('.taghash').val(JSON.stringify(tagHash));
             $(this).val('');
@@ -44,9 +48,11 @@ $(document).ready(function() {
     });
 
     for(t in tagHash) {
-        if(tagHash[t] == 'add' && $("span[data-name='"+ t +"']").length == 0) $('.taglist').append("<span class='label' data-name='" + t + "'>" + t + "<a href='' class='delete-tag'>x</a></span>");
+        if(tagHash[t] == 'add' && $("span[data-name='"+ t +"']").length == 0) $('.taglist').append("<span class='label' data-name='" + t + "'>" + t + "<a class='delete-tag'> x</a></span>");
         else if(tagHash[t] == 'remove') $("span[data-name='" + t + "']").remove();
-    }    
+    }
+    
+    $('.delete-tag').bind('click', removeTagFromDom);
 
     $('.confirm-delete').bind('click', function(e) {
         if(!confirm('Are you sure you want to delete this?')) e.preventDefault();
