@@ -84,6 +84,7 @@ DEPENDENCIES
   omniauth-google-apps
   pg
   rspec
+  rspec-mocks
   sequel
   sequel_pg
   sinatra

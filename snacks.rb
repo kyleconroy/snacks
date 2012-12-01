@@ -1,8 +1,8 @@
 require './environment'
 
 set :root, File.dirname(__FILE__)
-use Rack::Session::Cookie, :secret => SnacksConfiguration['xss_token']
-use(OmniAuth::Builder) { provider :google_apps, :domain => SnacksConfiguration['google_apps_domain'] }
+use Rack::Session::Cookie, :secret => Snacks.configuration['xss_token']
+use(OmniAuth::Builder) { provider :google_apps, :domain => Snacks.configuration['google_apps_domain'] }
 
 Sequel::Model.plugin :timestamps
 Sequel::Model.raise_on_save_failure = false
@@ -25,6 +25,10 @@ class Article < Sequel::Model
   
   def taghash
     {}
+  end
+  
+  def vote_for(user)
+    Vote.find(:user => user, :article => self) if user
   end
 end
 
@@ -130,18 +134,24 @@ module ParamHelpers
   end
 end
 
-def authenticate
+class Unauthorized < Exception; end
+
+error Unauthorized do
+  [403, "Access Denied"]
+end
+
+def authenticate!
   unless session[:user_id]
+    raise Unauthorized unless request.get?
     session[:back_page] = request.path_info
     redirect to('auth/google_apps')
   end
   @current_user = User[session[:user_id]]
 end
 
-class Unauthorized < Exception; end
-
-error Unauthorized do
-  [403, "Access Denied"]
+def authenticate
+  return authenticate! unless Snacks.configuration['allow_anonymous_readers']
+  @current_user = User[session[:user_id]] if session[:user_id]
 end
 
 def authorize(authorized_user)
@@ -179,7 +189,7 @@ get '/' do
 end
 
 post '/tags/create' do
-  authenticate
+  authenticate!
   @tag = Tag.new(:name => params[:name])
   @tag.save ? redirect(to('/tags')) : erb(:tags_index)
 end
@@ -198,7 +208,7 @@ get '/tags/:tagname' do
 end
 
 get '/questions/new' do
-  authenticate
+  authenticate!
   @question = Question.new
   erb :questions_new
 end
@@ -210,7 +220,7 @@ get '/questions' do
 end
 
 post '/questions/create' do
-  authenticate
+  authenticate!
   @question = Question.new(:text => params[:text], 
                            :title => params[:title],
                            :user => @current_user)
@@ -225,7 +235,7 @@ get '/questions/:id' do
 end
 
 post '/questions/:question_id/answers' do
-  authenticate
+  authenticate!
   @question = Question[params[:question_id]]
   @answer = Answer.new(:text => params[:text],
                       :user => @current_user,
@@ -234,14 +244,14 @@ post '/questions/:question_id/answers' do
 end
 
 get '/articles/:id/edit' do
-  authenticate
+  authenticate!
   @article = Article[params[:id]]
   authorize(@article.user)
   erb :articles_edit
 end
 
 post '/articles/:id/update' do
-  authenticate
+  authenticate!
   @article = Article[params[:id]]
   authorize(@article.user)
   @article.text = params[:text]
@@ -251,7 +261,7 @@ post '/articles/:id/update' do
 end
 
 post '/articles/:id/destroy' do
-  authenticate
+  authenticate!
   article = Article[params[:id]]
   authorize(article.user)
   article.destroy
@@ -271,7 +281,7 @@ end
 
 [['upvote', 1], ['downvote', -1]].each do |path, value|
   post '/articles/:article_id/' + path do
-    authenticate
+    authenticate!
     article = Article[params[:article_id]]
     vote = Vote.find(:article => article, :user => @current_user, :value => value)
     vote ? vote.destroy : Vote.create(:article => article, :user => @current_user, :value => value)
@@ -280,7 +290,7 @@ end
 end
 
 post '/articles/:article_id/comments' do
-  authenticate
+  authenticate!
   article = Article[params[:article_id]]
   @comment = Comment.new(:user => @current_user,
                         :text => params[:text],
@@ -290,7 +300,7 @@ post '/articles/:article_id/comments' do
 end
 
 post '/comments/:id/destroy' do
-  authenticate
+  authenticate!
   comment = Comment[params[:id]]
   question = comment.article.question
   authorize(comment.user)

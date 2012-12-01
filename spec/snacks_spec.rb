@@ -189,6 +189,7 @@ describe 'browser tests' do
   end
   
   it "can create a tag" do
+    visit '/auth/google_apps'
     visit '/tags'
     fill_in 'name', :with => 'an-invalid-tag-'
     click_button "Create Tag"
@@ -267,6 +268,7 @@ describe 'browser tests' do
   end
   
   it "only allows creator to edit an article" do
+    visit '/auth/google_apps'
     q = Question.create(:title => 'What is the best snack?', :text => 'More description', :user => User.find(:uid => 'FAKE_TEST_UID'))
     visit "/questions/#{q.id}"
     within('#question') { page.should have_link('Edit') }
@@ -283,6 +285,7 @@ describe 'browser tests' do
   end
   
   it "only allows creator to delete an article" do
+    visit '/auth/google_apps'
     q = Question.create(:title => 'What is the best snack?', :text => 'More description', :user => User.find(:uid => 'FAKE_TEST_UID'))
 
     visit "/articles/#{q.id}/edit"
@@ -294,6 +297,7 @@ describe 'browser tests' do
     
     OmniAuth.config.add_mock(:google_apps, {:uid => 'FAKE_TEST_UID_2'})
     visit '/logout'
+    visit '/auth/google_apps'
     
     browser = Rack::Test::Session.new(Rack::MockSession.new(Sinatra::Application))
     browser.post "/articles/#{q.id}/destroy", nil, {"rack.session" => {"user_id" => User.find(:uid => 'FAKE_TEST_UID_2').id} }
@@ -301,6 +305,7 @@ describe 'browser tests' do
   end
   
   it "only allows creator to delete a comment" do
+    visit '/auth/google_apps'
     q = Question.create(:title => 'What is the best snack?', :text => 'More description', :user => User.find(:uid => 'FAKE_TEST_UID'))
     visit "/questions/#{q.id}"
     within ('#question') do
@@ -313,6 +318,7 @@ describe 'browser tests' do
     
     OmniAuth.config.add_mock(:google_apps, {:uid => 'FAKE_TEST_UID_2'})
     visit '/logout'
+    visit '/auth/google_apps'
     visit "/questions/#{q.id}"
     within ('#question') do
       page.should_not have_content "Delete Comment"
@@ -325,6 +331,7 @@ describe 'browser tests' do
     
     OmniAuth.config.add_mock(:google_apps, {:uid => 'FAKE_TEST_UID'})
     visit '/logout'
+    visit '/auth/google_apps'
     visit "/questions/#{q.id}"
     within ('#question') do
       expect { click_button "Delete Comment" }.to change { Comment.count }.by(-1)
@@ -369,11 +376,24 @@ describe 'browser tests' do
     visit '/tags/new-tag'
     page.should have_content 'What is the best snack?'
   end
+
+  it "should allow anonymous browsing" do
+    browser = Rack::Test::Session.new(Rack::MockSession.new(Sinatra::Application))
+
+    Snacks.stub(:configuration).and_return({ 'allow_anonymous_readers' => true })
+    browser.get "/"
+    browser.last_response.should be_ok
+
+    Snacks.stub(:configuration).and_return({ 'allow_anonymous_readers' => false })
+    browser.get "/"
+    browser.last_response.should be_redirect
+  end
+
+  it "handles 404s in a sane way" do
+
+  end
   
-  it "should allow anonymous browsing"
-  it "breaks if i try creating a question and not logged in"
   it "should persist comments after failing validation and show errors nearby"
-  it "handles 404s in a sane way"
   it "can't vote on own question"
   
   # less important below this line

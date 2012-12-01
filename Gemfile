@@ -11,5 +11,6 @@ gem 'american_date'
 gem 'rspec'
 
 group :test do
+  gem 'rspec-mocks'
   gem 'capybara', '2.0.1'
 end

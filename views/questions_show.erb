@@ -5,7 +5,7 @@
     <%= erb :_errors, :locals => {:model => @comment } %>
     <div class='row article' id='question' data-id='<%= @question.id %>'>
       <div class="span1">
-        <%= erb :_score, :locals => {:score => @question.score, :vote => Vote.find(:user => @current_user, :article => @question) } %>
+        <%= erb :_score, :locals => {:score => @question.score, :vote => @question.vote_for(@current_user) } %>
       </div>
       <div class="span9">
         <p><%= @question.text %></p>
@@ -34,7 +34,7 @@
     <% @question.answers.each do |answer| %>
     <div class='row article answer' data-id='<%= answer.id %>'>
       <div class="span1">
-        <%= erb :_score, :locals => {:score => answer.score, :vote => Vote.find(:user => @current_user, :article => answer) } %>
+        <%= erb :_score, :locals => {:score => answer.score, :vote => answer.vote_for(@current_user) } %>
       </div>
       <div class="span9">
         <p>
