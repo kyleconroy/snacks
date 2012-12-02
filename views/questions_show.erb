@@ -13,12 +13,12 @@
           <span class="label"><%= tag.name %></span>
         <% end %>
         <div class="row">
-          <div class="span2" style='margin-top: 10px;'>
+          <div class="span2">
             <% if @question.user == @current_user %>
               <a href="/articles/<%= @question.id %>/edit">Edit</a>
             <% end %>
           </div>
-          <div class="span3 offset4" style='background-color: #ddd'>
+          <div class="span3 offset4">
           <%= erb :_name_badge, :locals => {:article => @question} %>          
           </div>
         </div>
@@ -42,12 +42,12 @@
         </p>
         <p><%= answer.text %></p>
         <div class="row">
-          <div class="span2" style='margin-top: 10px;'>
+          <div class="span2">
             <% if answer.user == @current_user %>
               <a href="/articles/<%= answer.id %>/edit">Edit</a>
             <% end %>
           </div>
-          <div class="span3 offset4" style='background-color: #ddd'>
+          <div class="span3 offset4">
           <%= erb :_name_badge, :locals => {:article => answer} %>          
           </div>
         </div>

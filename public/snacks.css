@@ -25,3 +25,8 @@
 .voted .arrow-down {
     border-top: 12px solid red;
 }
+
+.nav {
+    margin-top: 10px;
+    margin-bottom:0px;
+}
