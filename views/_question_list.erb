@@ -1,25 +1,20 @@
-<div class="row">
-  <div class="span12">
-    <table class="table">
-      <tbody>
-      <% @questions.each do |question| %>
-        <tr>
-          <td>
-          
-            0 Votes 0 Answers 0 Views
-          </td>
-          <td><a href="/questions/<%= question[:id] %>"><%= question[:title] %></a></td>
-          <td>
-            <small>
-              <%= question.created_at.to_time.ago_in_words if question.created_at %>
-              <% if question.user %>
-              <a href="/users/<%= question.user.id %>"><%= question.user.name %></a>
-            </small>
-          <% end %>
-          </td>
-        </tr>
+<table class="table">
+  <tbody>
+  <% @questions.each do |question| %>
+    <tr>
+      <td>
+        0 Votes 0 Answers 0 Views
+      </td>
+      <td><a href="/questions/<%= question[:id] %>"><%= question[:title] %></a></td>
+      <td>
+        <small>
+          <%= question.created_at.to_time.ago_in_words if question.created_at %>
+          <% if question.user %>
+          <a href="/users/<%= question.user.id %>"><%= question.user.name %></a>
+        </small>
       <% end %>
-      </tbody>
-    </table>
-  </div>
-</div>
+      </td>
+    </tr>
+  <% end %>
+  </tbody>
+</table>
