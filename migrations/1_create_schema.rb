@@ -82,11 +82,11 @@ Sequel.migration do
   end
   
   down do
-    drop_table(:articles)
-    drop_table(:tags)
-    drop_table(:articles_tags)
-    drop_table(:users)
-    drop_table(:votes)
-    drop_table(:comments)
+    drop_table(:articles, :cascade => true)
+    drop_table(:tags, :cascade => true)
+    drop_table(:articles_tags, :cascade => true)
+    drop_table(:users, :cascade => true)
+    drop_table(:votes, :cascade => true)
+    drop_table(:comments, :cascade => true)
   end
 end
