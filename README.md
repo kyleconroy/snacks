@@ -5,18 +5,20 @@ It is meant to be deployed on Heroku and used with Google Apps authentication. P
 
 Snacks is on [Pivotal Tracker.](https://www.pivotaltracker.com/projects/709989#)
 
-Requirements
+Deployment
 ---
-* PostgreSQL
-* Ruby (MRI 1.9+)
-* Firefox (for running Selenium tests)
-* Your favorite snack
+    heroku apps:create my-qa-site --stack cedar
+    heroku addons:add sendgrid:starter
+    heroku config:add EMAIL_DELIVERY_ADDRESS=qa-user@example.com
+    heroku config:add AUTHORIZED_IP_ADDRESSES='{ :sf => [ IPAddr.new("10.0.0.1/24") ] }'
+    git push heroku
+    heroku run rake db:migrate:up
 
 Configuration
 ---
 * ALLOW_ANONYMOUS_READERS - true if you can read questions/answers without logging in
 * GOOGLE_APPS_DOMAIN - the authentication domain
 * XSS_TOKEN - something unguessable
-* EMAILER_FREQUENCY - 'daily', 'weekly', etc
-* EMAILER_ADDRESS - the email address to send email as e.g. qa-mailer@example.com
-* EMAILER_PASSWORD - the password for that email address
+* EMAIL_DELIVERY_FREQUENCY - 'daily', 'weekly', etc
+* EMAIL_DELIVERY_ADDRESS - the email address to send email as e.g. qa-mailer@example.com
+* AUTHORIZED_IP_ADDRESSES - which ip addresses to allow in
