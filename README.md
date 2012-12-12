@@ -1,3 +1,5 @@
+[![Build Status](https://secure.travis-ci.org/bdon/snacks.png)](http://travis-ci.org/bdon/snacks)
+
 Snacks is a stupidly simple question and answer application. 
 It is meant to be deployed on Heroku and used with Google Apps authentication. Perfect as an internal site for your comapny.
 
