@@ -7,6 +7,15 @@ Snacks has a minimalist, hackable code base; its only runtime dependency is Post
 
 Snacks is on [Pivotal Tracker.](https://www.pivotaltracker.com/projects/709989#)
 
+Features
+---
+* Authentication with Google Apps, optional anonymous read access
+* Text search over questions, answers, and comments
+* Question tagging
+* Activity feeds
+* Email notifications
+* Daily or weekly email summaries
+
 Deployment
 ---
     heroku apps:create my-qa-site --stack cedar
