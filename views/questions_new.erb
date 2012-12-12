@@ -13,7 +13,7 @@
       <input type="text" class="span3" name="title" placeholder="Title">
       <hr>
       <textarea class="input-large" id="text" name="text" rows="4" placeholder="Article Text"></textarea>
-      <input name="taghash" class='taghash' value='<%= @question.taghash.to_json %>'></input>
+      <input name="taghash" class='taghash hidden' value='<%= @question.taghash.to_json %>'></input>
       <button type="submit" class="btn">Create Question</button>
     </form>
 

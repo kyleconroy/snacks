@@ -22,7 +22,7 @@
   <div class="span3">
     <% @tags.each do |tag| %>
         <div>
-          <a href="/tags/<%= tag.name %>"><span class="label"><%= tag.name %></span></a>x<%= tag[:count] %>
+          <a href="/tags/<%= tag.name %>"><span class="label"><%= tag.name %></span></a> x <%= tag[:count] %>
         </div>
     <% end %>
   </div>

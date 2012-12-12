@@ -2,7 +2,7 @@
 <form action="/articles/<%= @article.id %>/update" method="post" enctype='multipart/form-data'>
   <input type="text" class="span3" name="title" placeholder="Title" value="<%= @article.title %>">
   <textarea rows="3" id="text" name="text"><%= @article.text %></textarea>
-  <input name="taghash" class='taghash' value='<%= @article.taghash.to_json %>'></input>
+  <input name="taghash" class='taghash hidden' value='<%= @article.taghash.to_json %>'></input>
   <button type="submit" class="btn">Save</button>
 </form>
 

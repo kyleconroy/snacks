@@ -389,16 +389,13 @@ describe 'browser tests' do
     browser.last_response.should be_redirect
   end
 
-  it "handles 404s in a sane way" do
-
-  end
-  
+  it "handles 404s in a sane way"
   it "should persist comments after failing validation and show errors nearby"
   it "can't vote on own question"
-  
-  # less important below this line
-  
   it "has pagination"
   it "jumps to the relevant answer section on a link"
+  it "sends emails when a question is updated"
+  it "sends a weekly or daily digest email"
+  it "has activity streams"
 end
 
