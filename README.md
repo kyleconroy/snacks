@@ -16,3 +16,12 @@ Wish list
 * activity streams
 * pure java packaging
 * soft deletes
+
+Configuration
+---
+* ALLOW_ANONYMOUS_READERS - true if you can read questions/answers without logging in
+* GOOGLE_APPS_DOMAIN - the authentication domain
+* XSS_TOKEN - something unguessable
+* EMAILER_FREQUENCY - 'daily', 'weekly', etc
+* EMAILER_ADDRESS - the email address to send email as e.g. qa-mailer@example.com
+* EMAILER_PASSWORD - the password for that email address

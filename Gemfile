@@ -10,6 +10,9 @@ gem 'time-lord'
 gem 'american_date'
 gem 'rspec'
 gem 'rake'
+gem 'queue_classic'
+gem 'pony'
+gem 'clockwork'
 
 group :test do
   gem 'rspec-mocks'
