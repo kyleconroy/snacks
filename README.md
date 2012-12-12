@@ -10,7 +10,6 @@ Deployment
     heroku apps:create my-qa-site --stack cedar
     heroku addons:add sendgrid:starter
     heroku config:add EMAIL_DELIVERY_ADDRESS=qa-user@example.com
-    heroku config:add AUTHORIZED_IP_ADDRESSES='{ :sf => [ IPAddr.new("10.0.0.1/24") ] }'
     git push heroku
     heroku run rake db:migrate:up
 
