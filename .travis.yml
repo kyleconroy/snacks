@@ -9,3 +9,5 @@ script:
   - bundle exec rspec spec/snacks_spec.rb
 env:
   - DATABASE_URL=postgres://postgres@127.0.0.1/snacks_test
+notifications:
+  email: false
