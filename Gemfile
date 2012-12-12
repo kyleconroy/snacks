@@ -9,6 +9,7 @@ gem 'thin'
 gem 'time-lord'
 gem 'american_date'
 gem 'rspec'
+gem 'rake'
 
 group :test do
   gem 'rspec-mocks'
