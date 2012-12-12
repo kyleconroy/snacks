@@ -18,3 +18,7 @@ group :test do
   gem 'rspec-mocks'
   gem 'capybara', '2.0.1'
 end
+
+group :development do
+  gem 'shotgun'
+end
