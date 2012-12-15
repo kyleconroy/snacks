@@ -8,7 +8,10 @@ before_script:
 script: 
   - bundle exec rspec spec
 env:
-  - DATABASE_URL=postgres://postgres@127.0.0.1/snacks_test
-  - SAUCE_URL=http://kylejconroy:7a7836d7-dd25-479c-be16-9088fa7bd193@ondemand.saucelabs.com:80/wd/hub
+  global:
+    - DATABASE_URL=postgres://postgres@127.0.0.1/snacks_test
+    - SAUCE_URL=http://kylejconroy:7a7836d7-dd25-479c-be16-9088fa7bd193@ondemand.saucelabs.com:80/wd/hub
+  matrix:
+    - TEST=true
 notifications:
   email: false
