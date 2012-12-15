@@ -2,6 +2,7 @@ require_relative './setup'
 
 Capybara.default_driver = :selenium
 
+
 describe 'browser tests with javascript' do
   include Capybara::DSL
 
