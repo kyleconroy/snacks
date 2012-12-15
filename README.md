@@ -16,6 +16,12 @@ Features
 * Email notifications
 * Daily or weekly email summaries
 
+Development
+---
+    bundle install
+    psql -c 'create database snacks_test;' -U postgres
+    rake test:prepare spec
+
 Deployment
 ---
     heroku apps:create my-qa-site --stack cedar

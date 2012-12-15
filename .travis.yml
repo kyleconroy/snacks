@@ -6,7 +6,7 @@ before_script:
   - psql -c 'create database snacks_test;' -U postgres
   - bundle exec rake test:prepare
 script: 
-  - bundle exec rspec spec/snacks_spec.rb
+  - bundle exec rspec spec
 env:
   - DATABASE_URL=postgres://postgres@127.0.0.1/snacks_test
 notifications:
